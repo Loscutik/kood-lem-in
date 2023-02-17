@@ -3,48 +3,65 @@ package main
 import (
 	"fmt"
 	"math"
+	"sync"
 )
 
 type path struct {
 	path []*room
 	len  int
 }
-
+/*
+returns all not intersectons pathes from start to end. Start is not include into the path
+*/
 func searchAllNotIntersectedPathes(start *room, end *room) (notIntersectedPathes[]path) {
+	wg:=&sync.WaitGroup{}
+
+	// looking for pathes for each room conected to start
+	// shortestPath keeps the path that is the shortest at the determined moment of searching 
+	// create shortestPath for each start's link
+	shortestPath:=make([]path, len(start.links))
+	countStatrtsLinks:=0
+
 	for _, roomNextToStart := range start.links {
-		shortestPath := path{len: math.MaxInt}
+		shortestPath[countStatrtsLinks] = path{len: math.MaxInt}
+		var searchPath func(i int, currentPath path, currentRoom *room)
+
 		
-		var searchPath func(currentPath path, currentRoom *room)
-		searchPath = func(currentPath path, currentRoom *room) {
+		searchPath = func(i int, currentPath path, currentRoom *room) {
+			defer wg.Done()
 			// it doesn't need to compare all path.
 			// If the current path's lenth is equal to the shortest path's length-1 it means that even the current room is the end
 			// the current path will have the same length as the shortest and will intersect with it
-			//fmt.Printf("!!!!\nfunc's start. currentPath: %sshortest len: %d\ncurrentRoom: %s\n\n", currentPath,shortestPath.len, currentRoom.name)
-			if currentPath.len < shortestPath.len-1{
+			if currentPath.len < shortestPath[i].len-1{
 				
 				currentPath.add(currentRoom)
 				if currentRoom == end {
-					shortestPath = currentPath
+					shortestPath[i] = currentPath
 					return
 				}
 				
 				for _, room := range currentRoom.links {
-					//fmt.Printf("??visited. room's name: %s \ncurrentPath: %s *\n",room.name, currentPath)
 					if room !=start && !currentPath.isVisited(room) {
-						//fmt.Printf("()before the recurse. currentPath: %sroom's name: %s \n***\n\n", currentPath,room.name)
-						searchPath(currentPath, room)
+						wg.Add(1)
+						searchPath(i, currentPath, room)
 					}
 				}
 			}
 		}
 		// search the shortest path for every room linked to start
 		currentPath := path{len: 0}
-		searchPath(currentPath, roomNextToStart)
-
-		if shortestPath.len<math.MaxInt{
-			notIntersectedPathes=append(notIntersectedPathes, shortestPath)
+		wg.Add(1)
+		go searchPath(countStatrtsLinks, currentPath, roomNextToStart)
+		countStatrtsLinks++
+		
+	}
+	wg.Wait()
+	for _,shP:=range shortestPath{
+		if shP.len<math.MaxInt{
+			notIntersectedPathes=append(notIntersectedPathes, shP)
 		}
 	}
+
 	return
 }
 

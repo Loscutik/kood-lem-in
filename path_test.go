@@ -56,7 +56,7 @@ func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
 	}
 	r7.links = map[string]*room{
 		"start": &start,
-		"end": &end,
+		"6": &r6,
 	}
 	r8.links = map[string]*room{
 		"6": &r6,
