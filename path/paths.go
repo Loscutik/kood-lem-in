@@ -61,19 +61,19 @@ func searchAllNotIntersectedPaths(farm *room.AntFarm) (allNotIntersectedPaths []
 	return
 }
 
-func (p *Path) len() int {
+func (p *Path) Len() int {
 	return len(*p)
 }
 
-func (p *Path) getRoom(number int) *room.Room {
+func (p *Path) GetRoom(number int) *room.Room {
 	return (*p)[number]
 }
 
 func (p *Path) String() string {
-	res := fmt.Sprintf("len:%d, addr: %p. strt - ", p.len(), p)
+	res := fmt.Sprintf("len:%d, addr: %p. strt - ", p.Len(), p)
 
-	for i := 0; i < p.len(); i++ {
-		res += fmt.Sprintf("-%s- ", p.getRoom(i).Name)
+	for i := 0; i < p.Len(); i++ {
+		res += fmt.Sprintf("-%s- ", p.GetRoom(i).Name)
 	}
 	return res
 }
