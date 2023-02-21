@@ -1,4 +1,6 @@
-package main
+package ants
+
+import "lemin/path"
 
 type (
 	pathesInRound  int // the number of used pathes in a round
@@ -7,7 +9,7 @@ type (
 
 type antOnPath struct {
 	ant      int
-	path     *path
+	path     *path.Path
 	position int
 }
 

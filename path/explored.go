@@ -74,17 +74,21 @@ func (ers *exploredRooms) getParent(r *room.Room) *room.Room {
 /*
 creates path from a given room
 */
-func (ers *exploredRooms) createPath(end *room.Room) *path {
-	var path path
-
-	path.len = 0
+func (ers *exploredRooms) createPath(end *room.Room) *Path {
+	var temPath queue
+	len := 0
 	// push room to the queue and then its parent, then grandparent e.c.
 	for end != nil {
-		path.path.pushToFront(end)
-		path.len++
+		temPath.pushToFront(end)
+		len++
 		ers.setStatusInPath(end)
 		end = ers.getParent(end)
 	}
+	path:=make(Path,len)
+	for i := 0; i < len; i++ {		
+		path[i] = temPath.popFromFront()
+	}
+
 	return &path
 }
 
