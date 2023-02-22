@@ -1,6 +1,7 @@
 package ants
 
 import (
+	"fmt"
 	"log"
 
 	"lemin/path"
@@ -12,28 +13,31 @@ type PathForAnt struct {
 	StartingRound int
 }
 
-// TODO funcs write...
-// TODO test file 
+
 // TODO Later don't foget to check the case when there are no paths at all
-// TODO func AntsGo (numberOfAnts int, paths []*path.Path, writeAntInRoom func(ant int, room *room.Room), writeRoundStart func(round int))
-// NEED func calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path)
+// TODO fix func AntsGo after getting calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path)
+
+func AntsGo (numberOfAnts int, paths []*path.Path) {
+	numberOfAntsOnPaths:=numberOfAntsOnPaths{} // must be a function
+	pathsForAnts:=assigntAntsPathsAndOrder(numberOfAnts,paths,numberOfAntsOnPaths)
+	printAntMoving(numberOfAnts,pathsForAnts)
+}
 
 /*
 leads ants trough their paths and write the result using given function
 */
-func writeAntMoving(numberOfAnts int, antsByPaths []PathForAnt, writeAntInRoom func(ant int, room *room.Room), writeRoundStart func(round int)) {
+func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 	// everything starts with zero
 	antNext := 0
 	round := 0
 	antsInTheEnd := 0
 	// ... and doesn't finish until reach the end
 	for antsInTheEnd < numberOfAnts {
-		writeRoundStart(round)
 		// 1st: let's all ants who already are on their way to end move to the next room
 		for ant, antWay := range antsByPaths[:antNext] {
 			passedRoomsInPath := round - antWay.StartingRound
 			if passedRoomsInPath < antWay.Path.Len() {
-				writeAntInRoom(ant, antWay.Path.GetRoom(passedRoomsInPath))
+				printAntInRoom(ant, antWay.Path.GetRoom(passedRoomsInPath))
 			} else {
 				antsInTheEnd++
 			}
@@ -41,16 +45,19 @@ func writeAntMoving(numberOfAnts int, antsByPaths []PathForAnt, writeAntInRoom f
 
 		// 2d: the next band of ants is starting (if they still are in the start room)
 		for antNext < numberOfAnts && antsByPaths[antNext].StartingRound == round {
-			writeAntInRoom(antNext, antsByPaths[antNext].Path.GetRoom(0))
+			printAntInRoom(antNext, antsByPaths[antNext].Path.GetRoom(0))
 			antNext++
 		}
-
+		fmt.Println()
 		round++
 	}
 }
 
 /*
-assigns a path and a round to start moving to each ant
+assigns a path and a round to start moving to each ant. 
+It supposes to work with correct data, e.g. length of numberOfAntsOnPaths must be not greater than length of paths.
+In the other case it will panic. 
+The function changes slice numberOfAntsOnPaths, each item of slice will be equal to 0
 */
 func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAntsOnPaths numberOfAntsOnPaths) []PathForAnt {
 	// everything starts with zero
@@ -74,6 +81,7 @@ func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAnts
 
 			// the next ant gets its own path and the round to start
 			antsByPaths[antNext] = PathForAnt{paths[pathNumber], round}
+			numberOfAntsOnPaths[pathNumber]--
 			antNext++
 
 		}
@@ -81,4 +89,11 @@ func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAnts
 	}
 
 	return antsByPaths
+}
+
+/*
+prints ant's position in Stdout in the format L#ant-room.Name
+*/
+func printAntInRoom(ant int, room *room.Room) {
+	fmt.Printf("L%d-%s ", ant+1, room.Name)
 }

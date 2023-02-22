@@ -12,7 +12,7 @@ type exploredRoom struct {
 	label  byte // 0 - unexplored, 1 -  explored in the current phase, 2 - is a part of already found paths
 }
 
-type exploredRooms map[string]*exploredRoom
+type exploredRooms map[*room.Room]*exploredRoom
 
 /*
 creates a new maps with all rooms, marks all the rooms as unexplored, apart from the start which is marked as part of a path
@@ -20,10 +20,10 @@ creates a new maps with all rooms, marks all the rooms as unexplored, apart from
 func New(farm *room.AntFarm) exploredRooms {
 	ers := make(exploredRooms)
 	for _, room := range farm.Rooms {
-		ers[room.Name] = &exploredRoom{room: room, label: 0}
+		ers[room] = &exploredRoom{room: room, label: 0}
 	}
 
-	ers[farm.Start.Name].label = 2
+	ers[farm.Start].label = 2
 	return ers
 }
 
@@ -31,14 +31,14 @@ func New(farm *room.AntFarm) exploredRooms {
 returns true if the given room was marked as unexplored
 */
 func (ers *exploredRooms) isUnexplored(r *room.Room) bool {
-	return (*ers)[r.Name].label == 0 
+	return (*ers)[r].label == 0 
 }
 
 /*
 sets status of exploring for the given room
 */
 func (ers *exploredRooms) setStatus(r *room.Room, stat byte) {
-	(*ers)[r.Name].label = stat
+	(*ers)[r].label = stat
 }
 
 /*
@@ -46,7 +46,7 @@ marks the given room as unexplored
 */
 func (ers *exploredRooms) setUnexplored(r *room.Room) {
 	ers.setStatus(r, 0)
-	(*ers)[r.Name].parent = nil
+	(*ers)[r].parent = nil
 }
 
 /*
@@ -54,7 +54,7 @@ marks the given room as explored
 */
 func (ers *exploredRooms) setExplored(r *room.Room, parent *room.Room) {
 	ers.setStatus(r, 1)
-	(*ers)[r.Name].parent = parent
+	(*ers)[r].parent = parent
 }
 
 /*
@@ -68,7 +68,7 @@ func (ers *exploredRooms) setStatusInPath(r *room.Room) {
 returns a parent of the given room
 */
 func (ers *exploredRooms) getParent(r *room.Room) *room.Room {
-	return (*ers)[r.Name].parent
+	return (*ers)[r].parent
 }
 
 /*

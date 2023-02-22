@@ -1,13 +1,14 @@
-package path
+package ants
 
 import (
 	"fmt"
 	"testing"
 
+	"lemin/path"
 	"lemin/room"
 )
 
-func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
+func BenchmarkPrintAnts(b *testing.B) {
 	start := room.Room{Name: "start"}
 	r1 := room.Room{Name: "1"}
 	r2 := room.Room{Name: "2"}
@@ -27,8 +28,8 @@ func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
 	}
 
 	start.Links = map[string]*room.Room{
-		"1": &r1,
-		"7": &r7,
+		"1":   &r1,
+		"7":   &r7,
 		"end": &end,
 	}
 	r1.Links = map[string]*room.Room{
@@ -66,7 +67,7 @@ func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
 	}
 	r7.Links = map[string]*room.Room{
 		"start": &start,
-		"end":     &end,
+		"end":   &end,
 	}
 	r8.Links = map[string]*room.Room{
 		"6": &r6,
@@ -76,8 +77,12 @@ func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
 		"6": &r6,
 	}
 
-	pathes := SearchAllNotIntersectedPaths(&farm)
-	for i, p := range pathes {
-		fmt.Printf("path# %d: %s\n", i, p)
-	}
+	paths := path.SearchAllNotIntersectedPaths(&farm)
+
+	ants:=5
+	numberOfAntsOnPaths :=numberOfAntsOnPaths{2,2,1}
+
+	pathsForAnts:=assigntAntsPathsAndOrder(ants,paths,numberOfAntsOnPaths)
+	fmt.Printf("after func slice numberOfAntsOnPaths %#v\n",numberOfAntsOnPaths)
+	printAntMoving(ants,pathsForAnts)
 }

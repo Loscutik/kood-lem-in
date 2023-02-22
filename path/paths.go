@@ -12,7 +12,7 @@ type Path []*room.Room
 searches all not intersectons paths from start to end using breadth-first search algorithm. Returned paths are sorted in accending oreder
 Start is not include into the path.
 */
-func searchAllNotIntersectedPaths(farm *room.AntFarm) (allNotIntersectedPaths []*Path) {
+func SearchAllNotIntersectedPaths(farm *room.AntFarm) (allNotIntersectedPaths []*Path) {
 	if farm.Start == farm.End {
 		allNotIntersectedPaths = append(allNotIntersectedPaths, nil)
 		return
