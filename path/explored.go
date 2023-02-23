@@ -30,51 +30,51 @@ func New(farm *room.AntFarm) exploredRooms {
 /*
 returns true if the given room was marked as unexplored
 */
-func (ers *exploredRooms) isUnexplored(r *room.Room) bool {
-	return (*ers)[r].label == 0 
+func (ers exploredRooms) isUnexplored(r *room.Room) bool {
+	return (ers)[r].label == 0 
 }
 
 /*
 sets status of exploring for the given room
 */
-func (ers *exploredRooms) setStatus(r *room.Room, stat byte) {
-	(*ers)[r].label = stat
+func (ers exploredRooms) setStatus(r *room.Room, stat byte) {
+	(ers)[r].label = stat
 }
 
 /*
 marks the given room as unexplored
 */
-func (ers *exploredRooms) setUnexplored(r *room.Room) {
+func (ers exploredRooms) setUnexplored(r *room.Room) {
 	ers.setStatus(r, 0)
-	(*ers)[r].parent = nil
+	(ers)[r].parent = nil
 }
 
 /*
 marks the given room as explored
 */
-func (ers *exploredRooms) setExplored(r *room.Room, parent *room.Room) {
+func (ers exploredRooms) setExplored(r *room.Room, parent *room.Room) {
 	ers.setStatus(r, 1)
-	(*ers)[r].parent = parent
+	(ers)[r].parent = parent
 }
 
 /*
 marks the given room as placed in a path
 */
-func (ers *exploredRooms) setStatusInPath(r *room.Room) {
+func (ers exploredRooms) setStatusInPath(r *room.Room) {
 	ers.setStatus(r, 2)
 }
 
 /*
 returns a parent of the given room
 */
-func (ers *exploredRooms) getParent(r *room.Room) *room.Room {
-	return (*ers)[r].parent
+func (ers exploredRooms) getParent(r *room.Room) *room.Room {
+	return (ers)[r].parent
 }
 
 /*
 creates path from a given room
 */
-func (ers *exploredRooms) createPath(end *room.Room) *Path {
+func (ers exploredRooms) createPath(end *room.Room) *Path {
 	var temPath queue
 	len := 0
 	// push room to the queue and then its parent, then grandparent e.c.
@@ -95,8 +95,8 @@ func (ers *exploredRooms) createPath(end *room.Room) *Path {
 /*
 switches status for all explored but not placed in a path rooms to unexplored status
 */
-func (ers *exploredRooms) switchExploredintoUnexplored() {
-	for _, er := range *ers {
+func (ers exploredRooms) switchExploredintoUnexplored() {
+	for _, er := range ers {
 		if er.label == 1 {
 			er.label = 0
 		}
