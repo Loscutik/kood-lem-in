@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	TunnelList := []string{} // The slice array of tunnels
+	RoomList := []string{}   // The slice array of room names and coordinates
 	args := os.Args
 	if len(args) != 2 {
 		fmt.Println("Please enter the source text file name as the first argument!")
@@ -22,10 +24,14 @@ func main() {
 		count++
 		for _, r := range scanner.Text() {
 			if (len(scanner.Text()) == 3) && (r == 45) { // Searches for tunnel pairs
-				fmt.Println(scanner.Text()) // Should be attached to the map instead
+				fmt.Println(scanner.Text())                     // Prints tunnel pairs to the terminal
+				TunnelList = append(TunnelList, scanner.Text()) // Ready list of tunnels made as a string array
+				break
 			}
+			// Need to add check for int coordinates
 			if (len(scanner.Text()) > 0) && (r == 32) { // Searches for rooms & coordinates
-				fmt.Println(scanner.Text()) // Should be attached to the map instead
+				fmt.Println(scanner.Text())                 // Prints room coordinates to the terminal
+				RoomList = append(RoomList, scanner.Text()) // Ready list of rooms with coordinates made as a string array
 				break
 			}
 			i, err := strconv.Atoi(scanner.Text()) // If there is only one number in the line - according to the rules this can be only the number of ants
