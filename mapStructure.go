@@ -10,6 +10,7 @@ import (
 func main() {
 	TunnelList := []string{} // The slice array of tunnels
 	RoomList := []string{}   // The slice array of room names and coordinates
+	var NumberOfAnts int     // The number of ants from the source file
 	args := os.Args
 	if len(args) != 2 {
 		fmt.Println("Please enter the source text file name as the first argument!")
@@ -36,7 +37,8 @@ func main() {
 			}
 			i, err := strconv.Atoi(scanner.Text()) // If there is only one number in the line - according to the rules this can be only the number of ants
 			if err == nil {
-				fmt.Println("Number of ants:", i)
+				NumberOfAnts = i // Creates the variable of the number of ants from source file to use in other functions
+				fmt.Println("Number of ants:", NumberOfAnts)
 				break
 			}
 		}
