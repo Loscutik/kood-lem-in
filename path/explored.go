@@ -58,7 +58,7 @@ func (ers *exploredRooms) setExplored(r *room.Room, parent *room.Room) {
 }
 
 /*
-marks the given room as places in a path
+marks the given room as placed in a path
 */
 func (ers *exploredRooms) setStatusInPath(r *room.Room) {
 	ers.setStatus(r, 2)

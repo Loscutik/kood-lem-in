@@ -14,9 +14,13 @@ type PathForAnt struct {
 }
 
 
-// TODO Later don't foget to check the case when there are no paths at all
+// TODO Later don't foget to check the case when there are no paths at all in func calculateNumberOfAntsOnPaths
+// TODO Later change type farm - exchange map with slice
 // TODO fix func AntsGo after getting calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path)
 
+/*
+prints ants moving through the farm
+*/
 func AntsGo (numberOfAnts int, paths []*path.Path) {
 	numberOfAntsOnPaths:=numberOfAntsOnPaths{} // must be a function
 	pathsForAnts:=assigntAntsPathsAndOrder(numberOfAnts,paths,numberOfAntsOnPaths)
