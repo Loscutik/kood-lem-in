@@ -19,61 +19,61 @@ func BenchmarkSearchAllNotIntersectedPathes(b *testing.B) {
 	r8 := room.Room{Name: "8"}
 	end := room.Room{Name: "end"}
 	farm := room.AntFarm{
-		Rooms: map[string]*room.Room{
-			"start": &start, "1": &r1, "2": &r2, "3": &r3, "4": &r4, "5": &r5, "6": &r6, "7": &r7, "8": &r8, "end": &end,
+		Rooms: []*room.Room{
+			&start, &r1, &r2, &r3, &r4, &r5, &r6, &r7, &r8, &end,
 		},
 		Start: &start,
 		End:   &end,
 	}
 
-	start.Links = map[string]*room.Room{
-		"1": &r1,
-		"7": &r7,
-		"end": &end,
+	start.Links = []*room.Room{
+		&r1,
+		&r7,
+		&end,
 	}
-	r1.Links = map[string]*room.Room{
-		"2":     &r2,
-		"5":     &r5,
-		"6":     &r6,
-		"start": &start,
+	r1.Links = []*room.Room{
+		&r2,
+		&r5,
+		&r6,
+		&start,
 	}
-	r2.Links = map[string]*room.Room{
-		"1": &r1,
-		"3": &r3,
+	r2.Links = []*room.Room{
+		&r1,
+		&r3,
 	}
-	r3.Links = map[string]*room.Room{
-		"2": &r2,
-		"4": &r4,
-		"5": &r5,
+	r3.Links = []*room.Room{
+		&r2,
+		&r4,
+		&r5,
 	}
-	r4.Links = map[string]*room.Room{
-		"3":   &r3,
-		"5":   &r5,
-		"6":   &r6,
-		"end": &end,
+	r4.Links = []*room.Room{
+		&r3,
+		&r5,
+		&r6,
+		&end,
 	}
-	r5.Links = map[string]*room.Room{
-		"1": &r1,
-		"3": &r3,
-		"4": &r4,
-		"5": &r5,
+	r5.Links = []*room.Room{
+		&r1,
+		&r3,
+		&r4,
+		&r5,
 	}
-	r6.Links = map[string]*room.Room{
-		"1":   &r1,
-		"4":   &r4,
-		"8":   &r8,
-		"end": &end,
+	r6.Links = []*room.Room{
+		&r1,
+		&r4,
+		&r8,
+		&end,
 	}
-	r7.Links = map[string]*room.Room{
-		"start": &start,
-		"end":     &end,
+	r7.Links = []*room.Room{
+		&start,
+		&end,
 	}
-	r8.Links = map[string]*room.Room{
-		"6": &r6,
+	r8.Links = []*room.Room{
+		&r6,
 	}
-	end.Links = map[string]*room.Room{
-		"4": &r4,
-		"6": &r6,
+	end.Links = []*room.Room{
+		&r4,
+		&r6,
 	}
 
 	pathes := SearchAllNotIntersectedPaths(&farm)
