@@ -14,11 +14,11 @@ type AntFarm struct {
 	End   *Room
 }
 type Room struct {
-	RoomMap []map[string]interface{}
-	Name    string
-	Links   []string // Creates an array of tunnel pairs
-	x       int      // X coordinates
-	y       int      // Y coordinates
+	//RoomMap []map[string]interface{}
+	Name  string
+	Links []string // Creates an array of tunnel pairs
+	x     int      // X coordinates
+	y     int      // Y coordinates
 }
 
 func (r *Room) CreateFarmStruct() {
@@ -95,10 +95,15 @@ func (r *Room) CreateFarmStruct() {
 	fmt.Println("Name:", r.Name)
 	r.Links = TunnelList
 	fmt.Println("Tunnels:", r.Links)
-	fmt.Println("Map:", r.RoomMap)
+	//fmt.Println("Map:", r.RoomMap)
 }
 
 func (r *Room) CheckRoomList(a string) bool {
+	f := &AntFarm{
+		Rooms: []*Room{},
+		Start: &Room{},
+		End:   &Room{},
+	}
 	StringArray := strings.Fields(a)
 	for h, k := range StringArray {
 		if len(StringArray) > 3 { // Checking if there are 3 parts of the string - Name, x and y
@@ -134,11 +139,12 @@ func (r *Room) CheckRoomList(a string) bool {
 			fmt.Println("Y:", k)
 		}
 	}
-	RoomMap1 := map[string]interface{}{
+	f.Rooms = append(f.Rooms, r)
+	/*RoomMap1 := map[string]interface{}{
 		"Name": r.Name,
 		"x":    r.x,
 		"y":    r.y,
 	}
-	r.RoomMap = append(r.RoomMap, RoomMap1)
+	r.RoomMap = append(r.RoomMap, RoomMap1)*/
 	return true
 }
