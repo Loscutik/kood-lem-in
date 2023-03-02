@@ -9,13 +9,16 @@ import (
 )
 
 type AntFarm struct {
-	Rooms      []*Room
-	Start, End *Room
+	Rooms []*Room
+	Start *Room
+	End   *Room
 }
 type Room struct {
-	Name  string   // Done
-	Links []string // Done
-	x, y  int      // coordinates
+	RoomMap []map[string]interface{}
+	Name    string
+	Links   []string // Creates an array of tunnel pairs
+	x       int      // X coordinates
+	y       int      // Y coordinates
 }
 
 func (r *Room) CreateFarmStruct() {
@@ -32,8 +35,16 @@ func (r *Room) CreateFarmStruct() {
 	scanner := bufio.NewScanner(readFile)
 	scanner.Split(bufio.ScanLines) // Sets the split function for the scanning operation.
 	count := 0                     // Counts the lines.
-	for scanner.Scan() {           // This scanner gets the file content line by line
+	isStart := false
+	isEnd := false
+	for scanner.Scan() { // This scanner gets the file content line by line
 		count++
+		if scanner.Text() == "##start" {
+			isStart = true
+		}
+		if scanner.Text() == "##end" {
+			isEnd = true
+		}
 		for _, h := range scanner.Text() {
 			if (len(scanner.Text()) == 3) && (h == 45) { // Searches for tunnel pairs
 				fmt.Println(scanner.Text())                     // Prints tunnel pairs to the terminal
@@ -42,6 +53,14 @@ func (r *Room) CreateFarmStruct() {
 			}
 			if (len(scanner.Text()) > 0) && (h == 32) { // Searches for rooms & coordinates
 				if r.CheckRoomList(scanner.Text()) { // Checks if the string with spaces contains the room name and coordinates
+					if isStart {
+						fmt.Println("START:", r.Name, r.x, r.y)
+						isStart = false
+					}
+					if isEnd {
+						fmt.Println("END:", r.Name, r.x, r.y)
+						isEnd = false
+					}
 					fmt.Println(scanner.Text())                 // Prints room coordinates to the terminal
 					RoomList = append(RoomList, scanner.Text()) // Ready list of rooms with coordinates made as a string array
 					break
@@ -59,9 +78,9 @@ func (r *Room) CreateFarmStruct() {
 		fmt.Println(err)
 	}
 	fmt.Println("Name:", r.Name)
-	//fmt.Println("Coordinates:", r.x, r.y)
 	r.Links = TunnelList
 	fmt.Println("Tunnels:", r.Links)
+	fmt.Println("Map:", r.RoomMap)
 }
 
 func (r *Room) CheckRoomList(a string) bool {
@@ -74,7 +93,7 @@ func (r *Room) CheckRoomList(a string) bool {
 		case 0: // The first part - the name of the room
 			for i := 0; i < len(k); i++ {
 				if k[0] != 76 && k[0] != 35 {
-					r.Name = r.Name + k + " " // NB, NEEDS TO BE CONVERTED TO MAP
+					r.Name = k
 					break
 				} else {
 					return false
@@ -100,5 +119,11 @@ func (r *Room) CheckRoomList(a string) bool {
 			fmt.Println("Y:", k)
 		}
 	}
+	RoomMap1 := map[string]interface{}{
+		"Name": r.Name,
+		"x":    r.x,
+		"y":    r.y,
+	}
+	r.RoomMap = append(r.RoomMap, RoomMap1)
 	return true
 }
