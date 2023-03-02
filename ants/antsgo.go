@@ -13,24 +13,30 @@ type PathForAnt struct {
 	StartingRound int
 }
 
-
-// TODO Later don't foget to check the case when there are no paths at all in func calculateNumberOfAntsOnPaths
-// TODO Later change type farm - exchange map with slice
-// TODO fix func AntsGo after getting calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path)
+// TODO test all
 
 /*
 prints ants moving through the farm
 */
-func AntsGo (numberOfAnts int, paths []*path.Path) {
-	numberOfAntsOnPaths:=numberOfAntsOnPaths{} // must be a function
-	pathsForAnts:=assigntAntsPathsAndOrder(numberOfAnts,paths,numberOfAntsOnPaths)
-	printAntMoving(numberOfAnts,pathsForAnts)
+func AntsGo(numberOfAnts int, paths []*path.Path) {
+	numberOfAntsOnPaths := calculateNumberOfAntsOnPaths(numberOfAnts, paths)
+	pathsForAnts := assigntAntsPathsAndOrder(numberOfAnts, paths, numberOfAntsOnPaths)
+	printAntMoving(numberOfAnts, pathsForAnts)
 }
 
 /*
 leads ants trough their paths and write the result using given function
 */
 func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
+	if antsByPaths == nil {
+		fmt.Println("No pathe is found")
+		return
+	}
+
+	if numberOfAnts == 0 {
+		fmt.Println("No ant seems to be on the farm")
+		return
+	}
 	// everything starts with zero
 	antNext := 0
 	round := 0
@@ -58,12 +64,15 @@ func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 }
 
 /*
-assigns a path and a round to start moving to each ant. 
+assigns a path and a round to start moving to each ant.
 It supposes to work with correct data, e.g. length of numberOfAntsOnPaths must be not greater than length of paths.
-In the other case it will panic. 
+In the other case it will panic.
 The function changes slice numberOfAntsOnPaths, each item of slice will be equal to 0
 */
 func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAntsOnPaths numberOfAntsOnPaths) []PathForAnt {
+	if paths == nil || numberOfAntsOnPaths == nil {
+		return nil
+	}
 	// everything starts with zero
 	antNext := 0
 	round := 0

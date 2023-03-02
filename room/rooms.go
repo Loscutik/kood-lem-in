@@ -11,8 +11,8 @@ type Room struct {
 	x, y  int // coordinates
 }
 
-func (f *AntFarm) AddRoom(name string, x, y int) (error) {
-	room:=Room{Name: name, x: x, y: y}
+func (f *AntFarm) AddRoom(name strinroom:=Room{Name: name, x: x, y: y}g, x, y int) (error) {
+	
 	//TODO check doubling rooms if isContains(f.Rooms,&room) return fmt.Errorf("double room...")
 
 	f.Rooms= append(f.Rooms, &room)
