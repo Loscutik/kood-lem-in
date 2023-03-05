@@ -14,17 +14,19 @@ type AntFarm struct {
 	End   *Room
 }
 type Room struct {
-	//RoomMap []map[string]interface{}
 	Name  string
-	Links []string // Creates an array of tunnel pairs
-	x     int      // X coordinates
-	y     int      // Y coordinates
+	Links []*Room // The array of []*Room structures of the Name+x+y rooms linked to the current room.
+	x     int     // X coordinates
+	y     int     // Y coordinates
 }
 
-func (r *Room) CreateFarmStruct() {
-	TunnelList := []string{} // The slice array of tunnels
-	RoomList := []string{}   // The slice array of room names and coordinates
-	var NumberOfAnts int     // The number of ants from the source file
+var TunnelList []string // The slice array of tunnels
+
+func (r *Room) CreateFarmStruct() (*AntFarm, int, error) {
+	//TunnelList := []string{} // The slice array of tunnels
+	RoomList := []string{} // The slice array of room names and coordinates
+	var NumberOfAnts int   // The number of ants from the source file
+	var err error
 	f := &AntFarm{
 		Rooms: []*Room{},
 		Start: &Room{},
@@ -60,20 +62,22 @@ func (r *Room) CreateFarmStruct() {
 				if r.CheckRoomList(scanner.Text()) { // Checks if the string with spaces contains the room name and coordinates
 					if isStart {
 						f.Start = &Room{
-							Name: r.Name,
-							x:    r.x,
-							y:    r.y,
+							Name:  r.Name,
+							Links: r.Links,
+							x:     r.x,
+							y:     r.y,
 						}
-						fmt.Println("START:", f.Start.Name, f.Start.x, f.Start.y)
+						fmt.Println("START: ", f.Start.Name, f.Start.x, f.Start.y)
 						isStart = false
 					}
 					if isEnd {
 						f.End = &Room{
-							Name: r.Name,
-							x:    r.x,
-							y:    r.y,
+							Name:  r.Name,
+							Links: r.Links,
+							x:     r.x,
+							y:     r.y,
 						}
-						fmt.Println("END:", f.End.Name, f.End.x, f.End.y)
+						fmt.Println("END: ", f.End.Name, f.End.x, f.End.y)
 						isEnd = false
 					}
 					fmt.Println(scanner.Text())                 // Prints room coordinates to the terminal
@@ -92,10 +96,9 @@ func (r *Room) CreateFarmStruct() {
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("Name:", r.Name)
-	r.Links = TunnelList
+	r.Links = r.LinksMaker(TunnelList, f.Rooms)
 	fmt.Println("Tunnels:", r.Links)
-	//fmt.Println("Map:", r.RoomMap)
+	return f, NumberOfAnts, err
 }
 
 func (r *Room) CheckRoomList(a string) bool {
@@ -140,11 +143,17 @@ func (r *Room) CheckRoomList(a string) bool {
 		}
 	}
 	f.Rooms = append(f.Rooms, r)
-	/*RoomMap1 := map[string]interface{}{
-		"Name": r.Name,
-		"x":    r.x,
-		"y":    r.y,
-	}
-	r.RoomMap = append(r.RoomMap, RoomMap1)*/
+	r.LinksMaker(TunnelList, f.Rooms)
 	return true
+}
+
+func (r *Room) LinksMaker(tunnels []string, Rooms []*Room) []*Room {
+	// check Rooms *[]Room => if name = 1 => Add *Room to []*Room Links for both.
+	for _, tunnelslice := range tunnels {
+		fmt.Println("Tunnel:", tunnelslice)
+	}
+	for _, oneroom := range Rooms {
+		fmt.Println("NAME:", oneroom.Name)
+	}
+	return r.Links
 }
