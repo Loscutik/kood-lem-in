@@ -57,6 +57,7 @@ func CreateFarmStruct() (int, *AntFarm, error) {
 			}
 		case strings.Contains(txt, " "):
 			if room.CheckRoomList(scanner.Text()) { // Checks if the string with spaces contains the room name and coordinates
+				room.Links = f.CreateLinks(TunnelList, room)
 				if isStart {
 					f.Start = &Room{
 						Name:  room.Name,
@@ -98,28 +99,44 @@ func CreateFarmStruct() (int, *AntFarm, error) {
 		}
 	}
 	fmt.Println("Tunnellist:", TunnelList)
+	for _, k := range f.Rooms {
+		k.Links = f.CreateLinks(TunnelList, room) // Пока дичь, needs to be improved
+		fmt.Println("Name, Links", room.Name, room.Links)
+	}
+	return NumberOfAnts, f, nil
+}
+
+func (f *AntFarm) CreateLinks(TunnelList []string, room *Room) []*Room {
+
 	var r1 string // room 1
 	var r2 string // room 2
-	for _, t := range TunnelList {
-		fmt.Println(t)
+	fmt.Printf("TL: %v", TunnelList)
+	fmt.Printf("TL: %v", len(TunnelList))
+	for _, j := range TunnelList {
+
 		// find  rooms for tunnels in the slice f.Room (r1:=f.findRoomByName(name1)). if there is no the room -error
 		// add tunnel to the both rooms
 		//r1.Links = append([]*Room, r2)
 		//r2.Links = append([]*Room, r1)
 		re := regexp.MustCompile("-")
-		split := re.Split(t, -1) // split is the room pair
+		split := re.Split(j, -1) // split is the room pair
 		for i := range split {
 			r1 = split[i]
 			r2 = split[i+1]
 			break
 		}
 		fmt.Println("Room 1; Room 2:", r1, r2)
-		if f.IsThereRoom(r1) {
-			fmt.Println("ff:", r1) // Need to create a function to fill the Links with the founded rooms.
+		for _, g := range f.Rooms {
+			if g.Name == r2 && f.IsThereRoom(r1) {
+				g = room
+				room.Links = append(room.Links, g)
+			}
 		}
+		// counter add
 	}
-	return NumberOfAnts, f, nil
+	return room.Links
 }
+
 func (f *AntFarm) IsThereRoom(name string) bool {
 	for _, r := range f.Rooms {
 		if r.Name == name {
