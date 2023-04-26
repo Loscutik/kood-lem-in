@@ -8,13 +8,55 @@ import (
 
 type Path []*room.Room
 
+type pathHandler struct{
+	flowCheck func(*room.Link) bool
+	setFlow func(*room.Room, *room.Room)
+	roomOnPathStatus byte
+} 
+
+func isAllowedToGo (l *room.Link) bool{
+	return l.Flow!=1
+}
+
+func isPartOfPaths (l *room.Link) bool{
+	return l.Flow==1
+}
+
+func changeFlow(from *room.Room, to *room.Room) {
+	link := from.GetLinkTo(to)
+	if link == nil {
+		panic("incorrect link")
+	}
+	link.Flow++
+
+	link = to.GetLinkTo(from)
+	if link == nil {
+		panic("incorrect link")
+	}
+	link.Flow--
+}
+
+func resetFlow(from *room.Room, to *room.Room) {
+	link := from.GetLinkTo(to)
+	if link == nil {
+		panic("incorrect link")
+	}
+	link.Flow = 0
+
+	link = to.GetLinkTo(from)
+	if link == nil {
+		panic("incorrect link")
+	}
+	link.Flow = 0
+}
+
 /*
 searches all not intersectons paths from start to end using breadth-first search algorithm. Returned paths are sorted in accending oreder
 Start is not include into the path.
 */
-func SearchAllNotIntersectedPaths(farm *room.AntFarm) (allNotIntersectedPaths []*Path) {
+func SearchAllPaths(farm *room.AntFarm, pathHandler *pathHandler) (paths []*Path) {
 	if farm.Start == farm.End {
-		allNotIntersectedPaths = append(allNotIntersectedPaths, nil)
+		paths = append(paths, nil)
 		return
 	}
 	// create list of visited rooms. At start all rooms except of the start is unvisited
@@ -23,37 +65,37 @@ func SearchAllNotIntersectedPaths(farm *room.AntFarm) (allNotIntersectedPaths []
 	var queue queue
 
 	// push all  start's link to the queue
-	for _, linkedRoom := range farm.Start.Links {
-		queue.pushToBack(linkedRoom)
-		exploredRooms.setExplored(linkedRoom, nil)
+	for _, link := range farm.Start.Links {
+		queue.pushToBack(link.Room)
+		exploredRooms.setExplored(link.Room, nil)
 	}
 	for !queue.isEmpty() {
 		currentRoom := queue.popFromFront()
 
 		if currentRoom == farm.End {
 			// create a new path and mark its rooms as part of the path
-			allNotIntersectedPaths = append(allNotIntersectedPaths, exploredRooms.createPath(farm.End))
+			paths = append(paths, exploredRooms.createPath(farm.Start, farm.End, pathHandler))
 			// the others room as unexplored
-			exploredRooms.switchExploredintoUnexplored()
-			// create new start queue
-			// if the end room is linked to start it will not be added to queue (in that it is marked as part of a path).
-			// If there is a path start-end, it will have been handled at start of the loop, so mustn't be added to start queue
+			exploredRooms.switchExploredintoUnexplored() 
+			// create a new start queue
+			// if the end room is linked to the start it will not be added to the queue (in that it is marked as a part of the path).
+			// If there is a path start-end, it will have been handled at the start of the loop, so it mustn't be added to start queue
 			queue.clear()
-			for _, linkedRoom := range farm.Start.Links {
-				if exploredRooms.isUnexplored(linkedRoom) {
-					queue.pushToBack(linkedRoom)
-					exploredRooms.setExplored(linkedRoom, nil)
+			for _, link := range farm.Start.Links {
+				if exploredRooms.isUnexplored(link.Room) && pathHandler.flowCheck(link) { // TODO check flow on link
+					queue.pushToBack(link.Room)
+					exploredRooms.setExplored(link.Room, nil)
 				}
 			}
 			exploredRooms.setUnexplored(farm.End)
 			continue
 		}
 
-		for _, linkedRoom := range currentRoom.Links {
-			if exploredRooms.isUnexplored(linkedRoom) {
-				queue.pushToBack(linkedRoom)
-				exploredRooms.setExplored(linkedRoom, currentRoom)
-				// fmt.Printf("curr room: %s, parrent: %s\n", linkedRoom.Name, exploredRooms[linkedRoom.Name].parent.Name)
+		for _, link := range currentRoom.Links {
+			if exploredRooms.isUnexplored(link.Room) {
+				queue.pushToBack(link.Room)
+				exploredRooms.setExplored(link.Room, currentRoom)
+				// fmt.Printf("curr room: %s, parrent: %s\n", link.Room.Name, exploredRooms[link.Room.Name].parent.Name)
 			}
 		}
 	}

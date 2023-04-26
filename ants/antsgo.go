@@ -13,13 +13,12 @@ type PathForAnt struct {
 	StartingRound int
 }
 
-// TODO test all
-
 /*
 prints ants moving through the farm
 */
 func AntsGo(numberOfAnts int, paths []*path.Path) {
 	numberOfAntsOnPaths := calculateNumberOfAntsOnPaths(numberOfAnts, paths)
+	fmt.Printf("%#v\n", numberOfAntsOnPaths)
 	pathsForAnts := assigntAntsPathsAndOrder(numberOfAnts, paths, numberOfAntsOnPaths)
 	printAntMoving(numberOfAnts, pathsForAnts)
 }
@@ -29,12 +28,12 @@ leads ants trough their paths and write the result using given function
 */
 func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 	if antsByPaths == nil {
-		fmt.Println("No pathe is found")
+		fmt.Println("No path")
 		return
 	}
 
 	if numberOfAnts == 0 {
-		fmt.Println("No ant seems to be on the farm")
+		fmt.Println("No ant seems to be in the farm")
 		return
 	}
 	// everything starts with zero
@@ -42,12 +41,14 @@ func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 	round := 0
 	antsInTheEnd := 0
 	// ... and doesn't finish until reach the end
+	fmt.Println(numberOfAnts)
 	for antsInTheEnd < numberOfAnts {
+		//fmt.Printf("-- round=%d, antNext=%d, antsInTheEnd=%d\n",round,antNext,antsInTheEnd)
 		// 1st: let's all ants who already are on their way to end move to the next room
-		for ant, antWay := range antsByPaths[:antNext] {
-			passedRoomsInPath := round - antWay.StartingRound
-			if passedRoomsInPath < antWay.Path.Len() {
-				printAntInRoom(ant, antWay.Path.GetRoom(passedRoomsInPath))
+		for ant:=antsInTheEnd;ant<antNext; ant++ {
+			passedRoomsInPath := round - antsByPaths[ant].StartingRound
+			if passedRoomsInPath < antsByPaths[ant].Path.Len() {
+				printAntInRoom(ant, antsByPaths[ant].Path.GetRoom(passedRoomsInPath))
 			} else {
 				antsInTheEnd++
 			}
@@ -61,6 +62,7 @@ func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 		fmt.Println()
 		round++
 	}
+	fmt.Printf("\nTotal rounds: %d\n", round-1)
 }
 
 /*
@@ -76,14 +78,16 @@ func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAnts
 	// everything starts with zero
 	antNext := 0
 	round := 0
-	// it keeps a path and round which an ant will start from. The index of the slice is equal to the ant number
+	// it keeps a path and a round which an ant will start from. The index of the slice is equal to the ant number
 	antsByPaths := make([]PathForAnt, numberOfAnts)
 	for antNext < numberOfAnts {
 
 		// walk through the list keeping the number of ants for each path
 		// and save the path and the start round for each ant in slice antsByPaths
+		//fmt.Printf("numberOfAntsOnPaths=%#v, round=%d, antNext=%d\n", numberOfAntsOnPaths, round, antNext)
 		for pathNumber, ants := range numberOfAntsOnPaths {
 			// if ants run out for the path, stop using that path
+			//fmt.Printf("--ants=%d, pathNumber=%d --\n",ants, pathNumber)
 			if ants == 0 {
 				numberOfAntsOnPaths = numberOfAntsOnPaths[:pathNumber]
 				break
@@ -91,16 +95,15 @@ func assigntAntsPathsAndOrder(numberOfAnts int, paths []*path.Path, numberOfAnts
 			if antNext == numberOfAnts {
 				log.Fatalln("ERROR during assigning ants to paths: there are some extra ants waiting to go")
 			}
-
+			
 			// the next ant gets its own path and the round to start
 			antsByPaths[antNext] = PathForAnt{paths[pathNumber], round}
 			numberOfAntsOnPaths[pathNumber]--
 			antNext++
-
 		}
 		round++
 	}
-
+	
 	return antsByPaths
 }
 

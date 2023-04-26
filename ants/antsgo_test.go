@@ -21,63 +21,63 @@ func BenchmarkPrintAnts(b *testing.B) {
 	end := room.Room{Name: "end"}
 	farm := room.AntFarm{
 		Rooms: []*room.Room{
-			&start, &r1, &r2, &r3, &r4, &r5, &r6, &r7, &r8, &end,
+			&start, &r1,&r2,&r4,&r5,&r6,&r7,&r8, &end,
 		},
 		Start: &start,
 		End:   &end,
 	}
 
-	start.Links = []*room.Room{
-		&r1,
-		&r7,
-		&end,
+	start.Links = []*room.Link{
+		{Room: &r1,Flow: 0},
+		{Room: &r7,Flow: 0},
+		{Room: &end,Flow: 0},
 	}
-	r1.Links = []*room.Room{
-		&r2,
-		&r5,
-		&r6,
-		&start,
+	r1.Links = []*room.Link{
+		{Room: &r2,Flow: 0},
+		{Room: &r5,Flow: 0},
+		{Room: &r6,Flow: 0},
+		{Room: &start,Flow: 0},
 	}
-	r2.Links = []*room.Room{
-		&r1,
-		&r3,
+	r2.Links = []*room.Link{
+		{Room: &r1,Flow: 0},
+		{Room: &r3,Flow: 0},
 	}
-	r3.Links = []*room.Room{
-		&r2,
-		&r4,
-		&r5,
+	r3.Links = []*room.Link{
+		{Room: &r2,Flow: 0},
+		{Room: &r4,Flow: 0},
+		{Room: &r5,Flow: 0},
 	}
-	r4.Links = []*room.Room{
-		&r3,
-		&r5,
-		&r6,
-		&end,
+	r4.Links = []*room.Link{
+		{Room: &r3,Flow: 0},
+		{Room: &r5,Flow: 0},
+		{Room: &r6,Flow: 0},
+		{Room: &end,Flow: 0},
 	}
-	r5.Links = []*room.Room{
-		&r1,
-		&r3,
-		&r4,
-		&r5,
+	r5.Links = []*room.Link{
+		{Room: &r1,Flow: 0},
+		{Room: &r3,Flow: 0},
+		{Room: &r4,Flow: 0},
+		{Room: &r5,Flow: 0},
 	}
-	r6.Links = []*room.Room{
-		&r1,
-		&r4,
-		&r8,
-		&end,
+	r6.Links = []*room.Link{
+		{Room: &r1,Flow: 0},
+		{Room: &r4,Flow: 0},
+		{Room: &r8,Flow: 0},
+		{Room: &end,Flow: 0},
 	}
-	r7.Links = []*room.Room{
-		&start,
-		&end,
+	r7.Links = []*room.Link{
+		{Room: &start,Flow: 0},
+		{Room: &end,Flow: 0},
 	}
-	r8.Links = []*room.Room{
-		&r6,
+	r8.Links = []*room.Link{
+		{Room: &r6,Flow: 0},
 	}
-	end.Links = []*room.Room{
-		&r4,
-		&r6,
+	end.Links = []*room.Link{
+		{Room: &r4,Flow: 0},
+		{Room: &r6,Flow: 0},
 	}
 
-	paths := path.SearchAllNotIntersectedPaths(&farm)
+	paths := path.SearchAllPaths(&farm, &pathHandler{isAllowedToGo, changeFlow, UNEXPLORED})
 
 	ants := 5
 	numberOfAntsOnPaths := numberOfAntsOnPaths{2, 2, 1}

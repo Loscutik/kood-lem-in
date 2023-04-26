@@ -9,11 +9,29 @@ type (
 	numberOfAntsOnPaths []int
 )
 
-// TODO  don't foget to check the case when there are no paths at all in func calculateNumberOfAntsOnPaths
+// determine the quantity of ants for each path
 func calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path) numberOfAntsOnPaths {
-	if paths==nil {return nil}
-	var numbers numberOfAntsOnPaths
+	if paths==nil || numberOfAnts==0 {return nil}
+	antsNumbers:= make(numberOfAntsOnPaths, len(paths))
+	i:=0
+	antsNumbers[0]=1
+	for a := numberOfAnts-1; a >0; a-- {
+		i++
+		if i>=len(paths) || paths[i].Len()-paths[0].Len()>/*>=*/a{i=0}
+		antsNumbers[i]++		
+	}
+	return antsNumbers
+}
 
-	numbers = nil // TODO if new path is added append, else numbers[i]++
-	return numbers
+func calculateNumberOfAntsOnPaths2(numberOfAnts int, paths []*path.Path) numberOfAntsOnPaths {
+	if paths==nil || numberOfAnts==0 {return nil}
+	antsNumbers:= make(numberOfAntsOnPaths, len(paths))
+	i:=0
+	antsNumbers[0]=1
+	for a := numberOfAnts; a >1; a-- {
+		i++
+		if i>=len(paths) || paths[i].Len() + antsNumbers[i]>/*>=*/paths[i-1].Len()+antsNumbers[i-1]{i=0}
+		antsNumbers[i]++		
+	}
+	return antsNumbers
 }
