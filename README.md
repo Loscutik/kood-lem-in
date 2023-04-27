@@ -10,16 +10,16 @@ The pack also contains the file to test the program. To launch it, please just w
 
 The program provides you results in the following format:
 
-``` diff
-! number_of_ants
-! the_rooms
-! the_links
+```
+number_of_ants
+the_rooms
+the_links
 
-! Lx-y
-! Lx-y Lx-y
-! Lx-y Lx-y Lx-y
-! Lx-y Lx-y
-! Lx-y
+Lx-y
+Lx-y Lx-y
+Lx-y Lx-y Lx-y
+Lx-y Lx-y
+Lx-y
 ```
 
 "**number_of_ants**" is the total number of ants in the farm, which will go from the room "Start" to the room "End". At the beginning, all ants are located in the room "Start", and they can make only one move from room to room in one step.
