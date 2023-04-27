@@ -6,7 +6,7 @@ To use the program, you need to have a text file, which contains the number of a
 
 The pack also contains the file to test the program. To launch it, please just write `bash test.sh` in your terminal. This will launch a script which will use some pre-installed lists of ant farm rooms to demonstrate how the program works.
 
-#### **How to read the results?**
+### **How to read the results?**
 
 The program provides you results in the following format:
 
@@ -34,7 +34,7 @@ Then there is a **final representation** of each step of each ant, which is done
 
 "**Finished in...**" is the timer which shows how fast the calculation was performed.
 
-#### **Errors**
+### **Errors**
 
 What happens if there is an error in the source text file, or there is no option to find paths according to the provided information? You will see an error message in your terminal, if:
 
