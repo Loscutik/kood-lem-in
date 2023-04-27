@@ -8,19 +8,25 @@ import (
 
 type Path []*room.Room
 
-type pathHandler struct{
-	flowCheck func(*room.Link) bool
-	setFlow func(*room.Room, *room.Room)
+type pathHandler struct {
+	flowCheck        func(*room.Link) bool
+	setFlow          func(*room.Room, *room.Room)
 	roomOnPathStatus byte
-} 
-
-func isAllowedToGo (l *room.Link) bool{
-	return l.Flow!=1
 }
 
-func isPartOfPaths (l *room.Link) bool{
-	return l.Flow==1
+func isAllowedToGo(l *room.Link) bool {
+	return l.Flow != 1
 }
+
+func isPartOfPaths(l *room.Link) bool {
+	return l.Flow == 1
+}
+
+func isJustBFS(l *room.Link) bool {
+	return l.Flow == 0
+}
+
+func noFlows(from *room.Room, to *room.Room) {}
 
 func changeFlow(from *room.Room, to *room.Room) {
 	link := from.GetLinkTo(to)
@@ -76,13 +82,13 @@ func SearchAllPaths(farm *room.AntFarm, pathHandler *pathHandler) (paths []*Path
 			// create a new path and mark its rooms as part of the path
 			paths = append(paths, exploredRooms.createPath(farm.Start, farm.End, pathHandler))
 			// the others room as unexplored
-			exploredRooms.switchExploredintoUnexplored() 
+			exploredRooms.switchExploredintoUnexplored()
 			// create a new start queue
 			// if the end room is linked to the start it will not be added to the queue (in that it is marked as a part of the path).
 			// If there is a path start-end, it will have been handled at the start of the loop, so it mustn't be added to start queue
 			queue.clear()
 			for _, link := range farm.Start.Links {
-				if exploredRooms.isUnexplored(link.Room) && pathHandler.flowCheck(link) { // TODO check flow on link
+				if exploredRooms.isUnexplored(link.Room) && pathHandler.flowCheck(link) { 
 					queue.pushToBack(link.Room)
 					exploredRooms.setExplored(link.Room, nil)
 				}
@@ -92,7 +98,7 @@ func SearchAllPaths(farm *room.AntFarm, pathHandler *pathHandler) (paths []*Path
 		}
 
 		for _, link := range currentRoom.Links {
-			if exploredRooms.isUnexplored(link.Room) {
+			if exploredRooms.isUnexplored(link.Room) && pathHandler.flowCheck(link) {
 				queue.pushToBack(link.Room)
 				exploredRooms.setExplored(link.Room, currentRoom)
 				// fmt.Printf("curr room: %s, parrent: %s\n", link.Room.Name, exploredRooms[link.Room.Name].parent.Name)
@@ -101,6 +107,11 @@ func SearchAllPaths(farm *room.AntFarm, pathHandler *pathHandler) (paths []*Path
 	}
 
 	return
+}
+
+func SearchAllNotIntersectedPaths(farm *room.AntFarm) []*Path {
+	SearchAllPaths(farm, &pathHandler{isAllowedToGo, changeFlow, UNEXPLORED})
+	return SearchAllPaths(farm, &pathHandler{isPartOfPaths, resetFlow, ON_PATH})
 }
 
 func (p *Path) Len() int {

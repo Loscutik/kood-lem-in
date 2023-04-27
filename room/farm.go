@@ -14,7 +14,7 @@ AddRoom adds a room with the given name and coordinates to the farm.
 If the farm already has a room with the same name, an error will be returned.
 Returns a pointer to the added room
 */
-func (f *AntFarm) AddRoom(name string, x, y int) (*Room, error) {
+func (f *AntFarm) addRoom(name string, x, y int) (*Room, error) {
 	room := Room{Name: name, Coord: coord{x, y}}
 
 	if f.contains(&room) {

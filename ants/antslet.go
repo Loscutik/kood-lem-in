@@ -11,27 +11,18 @@ type (
 
 // determine the quantity of ants for each path
 func calculateNumberOfAntsOnPaths(numberOfAnts int, paths []*path.Path) numberOfAntsOnPaths {
-	if paths==nil || numberOfAnts==0 {return nil}
-	antsNumbers:= make(numberOfAntsOnPaths, len(paths))
-	i:=0
-	antsNumbers[0]=1
-	for a := numberOfAnts-1; a >0; a-- {
-		i++
-		if i>=len(paths) || paths[i].Len()-paths[0].Len()>/*>=*/a{i=0}
-		antsNumbers[i]++		
+	if paths == nil || numberOfAnts == 0 {
+		return nil
 	}
-	return antsNumbers
-}
-
-func calculateNumberOfAntsOnPaths2(numberOfAnts int, paths []*path.Path) numberOfAntsOnPaths {
-	if paths==nil || numberOfAnts==0 {return nil}
-	antsNumbers:= make(numberOfAntsOnPaths, len(paths))
-	i:=0
-	antsNumbers[0]=1
-	for a := numberOfAnts; a >1; a-- {
+	antsNumbers := make(numberOfAntsOnPaths, len(paths))
+	i := 0
+	antsNumbers[0] = 1
+	for a := numberOfAnts - 1; a > 0; a-- {
 		i++
-		if i>=len(paths) || paths[i].Len() + antsNumbers[i]>/*>=*/paths[i-1].Len()+antsNumbers[i-1]{i=0}
-		antsNumbers[i]++		
+		if i >= len(paths) || paths[i].Len()-paths[0].Len() >= /*>*/ a {
+			i = 0
+		}
+		antsNumbers[i]++
 	}
 	return antsNumbers
 }

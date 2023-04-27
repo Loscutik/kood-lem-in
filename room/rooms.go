@@ -3,6 +3,7 @@ package room
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -15,7 +16,7 @@ type coord struct {
 
 type Link struct {
 	Room *Room
-	Flow byte 
+	Flow int8
 }
 
 type Room struct {
@@ -24,9 +25,9 @@ type Room struct {
 	Coord coord
 }
 
-func (r *Room)GetLinkTo(to *Room) *Link{
-	for _, l := range r.Links  {
-		if l.Room==to{
+func (r *Room) GetLinkTo(to *Room) *Link {
+	for _, l := range r.Links {
+		if l.Room == to {
 			return l
 		}
 	}
@@ -40,17 +41,13 @@ func (r *Room) AddLink(neibor *Room) {
 			return
 		}
 	}
-	r.Links = append(r.Links, &Link{neibor,0})
+	r.Links = append(r.Links, &Link{neibor, 0})
 }
 
 func CreateFarm(readFile *os.File) (int, *AntFarm, error) {
 	var TunnelList []string // The slice of tunnels for printing
 	var numberOfAnts int    // The number of ants from the source file
-	farm := &AntFarm{
-		Rooms: []*Room{},
-		Start: &Room{},
-		End:   &Room{},
-	}
+	farm := &AntFarm{}
 
 	scanner := bufio.NewScanner(readFile)
 	scanner.Split(bufio.ScanLines) // Sets the split function for the scanning operation.
@@ -68,14 +65,14 @@ func CreateFarm(readFile *os.File) (int, *AntFarm, error) {
 		// check comments
 		if strings.HasPrefix(txt, "#") {
 			if scanner.Text() == "##start" {
-				if isStart>0 {
+				if isStart > 0 {
 					return 0, nil, fmt.Errorf("row %d: there must be only one start room", rowCounter)
 				}
 				isStart = 1
 				continue
 			}
 			if scanner.Text() == "##end" {
-				if isEnd>0 {
+				if isEnd > 0 {
 					return 0, nil, fmt.Errorf("row %d: there must be only one end room", rowCounter)
 				}
 				isEnd = 1
@@ -98,17 +95,16 @@ func CreateFarm(readFile *os.File) (int, *AntFarm, error) {
 			if err != nil {
 				return 0, nil, fmt.Errorf("row %d: incorect coordinates", rowCounter)
 			}
-
-			room, err := farm.AddRoom(submatches[1], x, y)
+			room, err := farm.addRoom(submatches[1], x, y)
 			if err != nil {
 				return 0, nil, fmt.Errorf("row %d: %v", rowCounter, err)
 			}
 
-			if isStart==1 {
+			if isStart == 1 {
 				farm.Start = room
 				isStart++
 			}
-			if isEnd==1 {
+			if isEnd == 1 {
 				farm.End = room
 				isEnd++
 			}
@@ -124,6 +120,8 @@ func CreateFarm(readFile *os.File) (int, *AntFarm, error) {
 			if room1 != nil && room2 != nil {
 				room1.AddLink(room2)
 				room2.AddLink(room1)
+			}else{
+				return 0, nil, fmt.Errorf("row %d: a tunnel to non-existent rooms", rowCounter)
 			}
 			TunnelList = append(TunnelList, scanner.Text())
 			continue
@@ -134,11 +132,33 @@ func CreateFarm(readFile *os.File) (int, *AntFarm, error) {
 		submatches = reg.FindStringSubmatch(scanner.Text())
 		if submatches != nil {
 			n, err := strconv.Atoi(submatches[0])
-			if err != nil {
+			if err != nil || n < 1 || n> math.MaxInt32-1 {
 				return 0, nil, fmt.Errorf("row %d: incorect quantity of ants", rowCounter)
 			}
 			numberOfAnts = n
 		}
+	}
+
+	if numberOfAnts==0 {
+		return 0, nil, fmt.Errorf("incorect quantity of ants")	
+	}
+	if farm.Rooms==nil{
+		return 0, nil, fmt.Errorf("there are no rooms")
+	}
+
+	if farm.Start==nil {
+		return 0, nil, fmt.Errorf("there is no start room")
+	}
+	if farm.End==nil {
+		return 0, nil, fmt.Errorf("there is no end room")
+	}
+
+	// check if there are connection to the start and the end points
+	if farm.Start.Links==nil {
+		return 0, nil, fmt.Errorf("there are no connection to the start room")
+	}
+	if farm.End.Links==nil {
+		return 0, nil, fmt.Errorf("there are no connection to the end room")
 	}
 
 	// printing the farm
