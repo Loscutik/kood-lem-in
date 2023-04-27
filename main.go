@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"lemin/ants"
 	"lemin/path"
@@ -28,11 +29,13 @@ func main() {
 		log.Fatalf("ERROR: invalid data format: %v",err)
 	}
 
+	start:=time.Now()
 	paths := path.SearchAllNotIntersectedPaths(farm)
 
-	for i, p := range paths {
-		fmt.Printf("path# %d: %s\n", i, p)
-	}
+	// for i, p := range paths {
+	// 	fmt.Printf("path# %d: %s\n", i, p)
+	// }
 
 	ants.AntsGo(numberOfAnts, paths)
+	fmt.Printf("finished in %v \n", time.Since(start))
 }

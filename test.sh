@@ -79,14 +79,14 @@ echo
 read -n1 -r -p "Press any key to continue..." key
 echo
 echo --------------------------------------
-#echo -e '\033[34mexampleMillionAnts less than 2.5 min\033[0m'
-#echo "-------------->"
-#echo
-#go run main.go examples/exampleMillionAnts.txt
-#echo
-#read -n1 -r -p "Press any key to continue..." key
-#echo
-#echo --------------------------------------
+echo -e '\033[34mexampleMillionAnts less than 2.5 min\033[0m'
+echo "-------------->"
+echo
+go run main.go examples/exampleMillionAnts.txt
+echo
+read -n1 -r -p "Press any key to continue..." key
+echo
+echo --------------------------------------
 echo -e '\033[34monly_ants\033[0m'
 echo "-------------->"
 echo
