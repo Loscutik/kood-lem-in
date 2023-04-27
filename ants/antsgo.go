@@ -18,7 +18,6 @@ prints ants moving through the farm
 */
 func AntsGo(numberOfAnts int, paths []*path.Path) {
 	numberOfAntsOnPaths := calculateNumberOfAntsOnPaths(numberOfAnts, paths)
-	fmt.Printf("%#v\n", numberOfAntsOnPaths)
 	pathsForAnts := assigntAntsPathsAndOrder(numberOfAnts, paths, numberOfAntsOnPaths)
 	printAntMoving(numberOfAnts, pathsForAnts)
 }
@@ -41,7 +40,6 @@ func printAntMoving(numberOfAnts int, antsByPaths []PathForAnt) {
 	round := 0
 	antsInTheEnd := 0
 	// ... and doesn't finish until reach the end
-	fmt.Println(numberOfAnts)
 	for antsInTheEnd < numberOfAnts {
 		//fmt.Printf("-- round=%d, antNext=%d, antsInTheEnd=%d\n",round,antNext,antsInTheEnd)
 		// 1st: let's all ants who already are on their way to end move to the next room
