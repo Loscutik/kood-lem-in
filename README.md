@@ -4,7 +4,7 @@ The project contains a program written in GoLang, which builds a virtual ant far
 
 To use the program, you need to have a text file, which contains the number of ants, the list of rooms with their coordinates, and the list of tunnels between the rooms. Please launch the program by using `go run . source.txt` command in your terminal, where "source.txt" should be replaced with the name of your text file.
 
-The pack also contains the file to test the program. To launch it, please just write `bash test.sh` in your terminal. This will launch a script which will use some pre-installed lists of ant farm rooms to demonstrate how the program works.
+The pack also contains the file to test the program. To launch it, please just write `bash test.sh` in your terminal if you use Windows, or `./test.sh` for Linux. This will launch a script which will use some pre-installed lists of ant farm rooms to demonstrate how the program works.
 
 ### **How to read the results?**
 
