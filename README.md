@@ -6,6 +6,8 @@ To use the program, you need to have a text file, which contains the number of a
 
 The pack also contains the file to test the program. To launch it, please just write `bash test.sh` in your terminal if you use Windows, or `./test.sh` for Linux. This will launch a script which will use some pre-installed lists of ant farm rooms to demonstrate how the program works.
 
+Audit page can be found [there](https://github.com/01-edu/public/tree/master/subjects/lem-in/audit)
+
 ### **How to read the results?**
 
 The program provides you results in the following format:
